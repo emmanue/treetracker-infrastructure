@@ -1,17 +1,17 @@
 variable "cluster_name" {}
 
 data "digitalocean_kubernetes_versions" "treetracker_kubernetes_version" {
-  version_prefix = "1.19."
+  version_prefix = "1.21."
 }
 
 resource "digitalocean_kubernetes_cluster" "kubernetes-cluster" {
-  name   = var.cluster_name
+  name = var.cluster_name
 
   lifecycle {
     prevent_destroy = true
   }
 
-  region = "nyc1"
+  region       = "nyc1"
   auto_upgrade = true
   version      = data.digitalocean_kubernetes_versions.treetracker_kubernetes_version.latest_version
 
@@ -25,7 +25,7 @@ resource "digitalocean_kubernetes_cluster" "kubernetes-cluster" {
 }
 
 resource "digitalocean_kubernetes_node_pool" "microservices-node-pool" {
-  cluster_id =  digitalocean_kubernetes_cluster.kubernetes-cluster.id
+  cluster_id = digitalocean_kubernetes_cluster.kubernetes-cluster.id
 
   name       = "microservices-node-pool"
   size       = "s-2vcpu-4gb"
@@ -35,17 +35,17 @@ resource "digitalocean_kubernetes_node_pool" "microservices-node-pool" {
 }
 
 resource "digitalocean_kubernetes_node_pool" "cloud-services-node-pool" {
-  cluster_id =  digitalocean_kubernetes_cluster.kubernetes-cluster.id
+  cluster_id = digitalocean_kubernetes_cluster.kubernetes-cluster.id
 
   name       = "cloud-services-node-pool"
   size       = "s-2vcpu-4gb"
-  node_count = 5
+  node_count = 6
   tags       = ["cloud-services-node", "treetracker-database-access"]
 
 }
 
 resource "digitalocean_kubernetes_node_pool" "monitoring-node-pool" {
-  cluster_id =  digitalocean_kubernetes_cluster.kubernetes-cluster.id
+  cluster_id = digitalocean_kubernetes_cluster.kubernetes-cluster.id
 
   name       = "monitoring-node-pool"
   size       = "s-4vcpu-8gb"
